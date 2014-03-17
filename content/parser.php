@@ -1,0 +1,5 @@
+<?php
+
+$page['content'] = "&nbsp;";
+
+?>

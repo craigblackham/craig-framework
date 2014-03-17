@@ -4,8 +4,8 @@
  * admin.php
  */
 
-$page_title = "System Administration";
+$page['title'] = "System Administration";
 
-$page_content = "&nbsp;";
+$page['content'] = "&nbsp;";
 
 ?>

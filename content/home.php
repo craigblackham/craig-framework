@@ -29,7 +29,7 @@ $page['content'] = <<<EOD
 
 <script type="text/javascript" src="js/countdown.js"></script>
 <script>
-	CountDownTimer('4/15/2014 9:00 AM', 'countdown');
+	CountDownTimer('8/8/2014 9:00 AM', 'countdown');
 </script>
 
 <div id="bookmarks">
@@ -37,7 +37,7 @@ $sitelist
 </div>
 
 <div id="countdown-wrap">
-<img src="theme/images/weigh-in.png" border="0" hspace="9">
+<img src="theme/images/bbb.png" border="0" hspace="9">
 <div id="countdown"></div>
 </div>
 

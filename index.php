@@ -20,6 +20,7 @@ $system = new System();
 
 //set error display
 $system->set_error_display();
+//$system->send_error("foo", "bar");
 
 //connect to database
 $system->db_name = "craig";
@@ -65,12 +66,16 @@ if ($conn){ //db is connected
 	//set up the top nav (main menu)
 	$page['menu'] = $system->get_menu($url_array);
 
+	//set up the top nav (main menu)
+	$page['search'] = $system->get_search();
+
 	//determine content file to load
 	if (count($url_array)){
 		$content_file = "content/{$url_array[0]}.php";
-		if (!empty($url_array[1])){
-			$content_file = "content/{$url_array[0]}/{$url_array[1]}.php";
-		}
+		//leave it to the parent content file to load sub-pages
+		//if (!empty($url_array[1])){
+		//	$content_file = "content/{$url_array[0]}/{$url_array[1]}.php";
+		//}
 	}
 
 	//check for restricted page access
@@ -110,6 +115,10 @@ if ($system->error){
 
 //set the alert message
 if (!empty($_SESSION['alert'])) $page['alert'] = $_SESSION['alert'];
+$page['alert'] = "Sample alert message";
+
+//set up toolbar - can be overwritten or added to in content file
+$page['icons'] = $system->get_toolbar_icon("print", "#", "Print");
 
 //show the content with html layout
 require_once("theme/layout.php");

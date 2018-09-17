@@ -1,0 +1,314 @@
+html {
+	height: 100%; /* 1, 3 */
+	min-height: 100vh;
+	font-family: "Arial", sans-serif;
+}
+
+body {
+	display: flex; 
+	flex-direction: column; 
+	height: 100%; /* 1, 3 */
+	min-height: 100vh;
+	padding: 0%;
+	margin: 0%;
+}
+
+img, embed, object, video {
+	max-width: 100%;
+	height: auto;
+	border: none;
+}
+
+img.thumbnail {
+	width: 120px;
+	height: auto;
+	padding: 12px;
+}
+
+img.menu {
+	width: 24px;
+}
+
+h2 {
+	color: #36b;
+	font-size: 1.2rem;
+	font-weight: bold;
+	margin: 6px 0px;
+}
+
+h3 {
+	color: #777;
+	font-size: .9rem;
+	font-weight: bold;
+	text-transform: uppercase;
+	margin: 6px 0px;
+}
+
+/* anchor tag styling */
+a {
+	color: #369;
+	font-size: .9rem;
+	text-decoration: none;
+}
+a:hover {
+	color: #999;
+	font-size: .9rem;
+	text-decoration: none;
+}
+
+.cf-header {
+	flex: 1 0 auto;
+	align-self: auto;
+	background-color: #DDD;
+	padding: 20px;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	min-height: 40px;
+}
+
+.cf-header-logo {
+	flex: 1 0 auto;
+	height: 30px;
+}
+
+.cf-header-user {
+	display: none;
+}
+
+a.logo, a.logo:visited {
+	color:#666;
+	font-size: 2rem;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+a.button, input.button {
+	font-family: "Arial", sans-serif;
+	border: 3px solid orange;
+	color: #fff;
+	font-weight: bold;
+	padding: 6px 12px;
+	cursor: pointer;
+	display: inline-block;
+	text-align: center;
+	text-decoration: none;
+	vertical-align: middle;
+	background-color: #999;
+	max-width: 250px;
+}
+
+.cf-topnav {
+	flex: 0 0 auto;
+	align-self: auto;
+	background-color: #444;
+	padding-top: 9px;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-between;
+  align-items: baseline;
+	min-height: 20px;
+}
+
+.cf-topnav-menu, .cf-topnav-search {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.cf-topnav-menu-icon, .cf-topnav-menu-links, .cf-topnav-search-icon, .cf-topnav-search-form {
+	flex: 1 0 auto;
+}
+
+.cf-topnav-menu-icon {
+	cursor: pointer;
+}
+
+.cf-topnav-search-form {
+	margin-right: 15px;	
+}
+
+.cf-topnav-search-form {
+	display: none;
+}
+
+.cf-topnav-menu-links {
+	display: flex;
+	width: 0px;
+	height: 0px;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	overflow: hidden;
+}
+
+a.topnav, a.topnav:visited {
+	flex: 1;
+	color: #fff;
+	padding: 6px 12px;
+	font-size: 1.1rem;
+	text-decoration: none;
+	display: block;
+}
+
+a.sidebar, a.sidebar:visited {
+	padding: 7px 6px 2px 1px;
+	text-decoration: none;
+}
+
+a.active {
+	color: orange;
+	border-bottom: solid 3px orange;
+}
+
+a.icon {
+	text-decoration: none;
+}
+
+.cf-appbar {
+	flex: 1 0 auto;
+	align-self: auto;
+	background-color: #fff;
+	padding: 6px;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-between;
+  align-items: center;
+	min-height: 30px;
+	border-bottom: 1px solid #999;
+}
+
+.cf-appbar-title {
+	color: orange;
+	font-weight: bold;
+	font-size: 1.75rem;
+	height: 30px;
+	padding: 6px;
+}
+
+.cf-appbar-alert, span.invalid {
+	color: #C33;
+	font-weight: 600;
+	padding: 6px;
+}
+
+.cf-appbar-icons {
+	display: none;
+	padding: 6px;
+}
+
+.cf-content {
+	flex: 60 0 auto;
+	align-self: auto;
+	background-color: #fff;
+	padding: 6px;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+
+.cf-content-side {
+	flex: 1 1 auto;
+	margin: 6px;
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+}
+
+.cf-content-main {
+	flex: 4 1 auto;
+	margin: 6px;
+}
+
+.cf-footer {
+	flex: 1 0 auto;
+	align-self: auto;
+	display: flex;
+}
+
+.cf-footer-copy {
+	flex: 1;
+	color: #eee;
+	background-color: #444;
+	font-size: .7rem;
+	padding: 12px;
+	text-align: center;
+}
+
+.countdown {
+	font-family: "OCR A Std", monospace;
+	font-weight: bold;
+	padding: 6px;
+}
+
+form.cf-form {
+	max-width: 600px;
+	background: #eee;
+	padding: 6px;
+	margin: 0px;
+}
+
+div.cf-input {
+	margin-bottom: 6px;
+}
+
+label {
+	font-weight: bold;
+	color: orange;
+	font-size: .8rem;
+	white-space: nowrap;
+	padding: 3px;
+}
+
+input, select, textarea {
+	font-size: .9rem;
+	width: 100%;
+	display: inline-block;
+	background-color: #fff;
+	color: #333;
+	border: solid 1px #666;
+	padding: 6px;
+	box-sizing: border-box;
+}
+
+input:focus, select:focus, textarea:focus {
+	background-color: #ffc;
+	color: #333;
+}
+
+p.question {
+	font-weight: bold;
+}
+
+p.answer {
+	padding-left: 12px;
+	padding-bottom: 6px;
+}
+
+@media screen and (min-width:350px) {
+	.cf-topnav-search-form {
+		display: block;
+	}
+}
+
+@media screen and (min-width:450px) {
+  .cf-header-user, .cf-appbar-icons {
+		display: block;
+	}
+}
+
+@media screen and (min-width:830px) {
+	.cf-topnav-menu-icon {
+		display: none;
+	}
+	.cf-topnav-menu-links {
+		width: 100%;
+		height: 100%;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		overflow: visible;
+	}
+
+}

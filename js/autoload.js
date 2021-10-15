@@ -54,5 +54,15 @@ $(document).ready(function(){
 		delete_confirm.dialog("open");
 	});
 
+	$('#menu-toggle').click(function() {
+			 //$('.cf-topnav-menu-links').toggle("slide");
+			 $('.cf-topnav-search').hide();
+			 $('.cf-topnav-menu-icon').hide();
+			 $('.cf-topnav-menu-links').css({"width":"300px","height":"100%"});
+			 //	width: 300px;
+	//height: 100%;
+//b
+			 
+	});
 
 });

@@ -12,7 +12,23 @@ class System {
 
 	public $acl = array(); //access control list for signed-in user
 
+	public $debug = false; //setting to true enables error display
+
 	function db_connect(){
+
+		try {
+
+			$this->db = new PDO("mysql:host=localhost;dbname=".$this->db_name, $_SERVER['DB_USER'], $_SERVER['DB_PASS']);
+	
+			if ( $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION) ){
+				return true;
+			}
+		
+		} catch (PDOException $e) {
+	    $this->display( $e->getMessage() );
+		}
+
+		return false;
 
 		if ( $connection_object = mysql_connect($_SERVER['DB_HOST'], $_SERVER['DB_USER'], $_SERVER['DB_PASS']) ){
 			if ( mysql_select_db($this->db_name) ){
@@ -66,10 +82,13 @@ class System {
 
 	function set_error_display(){
 
+		//init to not being in debug mode
 		$debug = false;
 
+		//conditions for going to debug
 		if (isset($_COOKIE['auth_token']) && $_COOKIE['auth_token'] == "cvb") $debug = true;
 		if ($_SERVER['HTTP_HOST'] == "www.craig.local") $debug = true;
+		if ($this->debug) $debug = true;
 
 		error_reporting (E_ALL);
 		ini_set("display_errors", "0");
@@ -113,21 +132,27 @@ class System {
 	}
 
 	function ip_is_authorized($ip){
-		$ip = mysql_real_escape_string($ip);
+		$ip = $this->db->quote($ip);
 
-		$query = "SELECT * FROM auth_address WHERE auth_ip = '$ip';";
-		if ($result = mysql_query($query, $this->conn)){
-			if ($row = mysql_fetch_assoc($result)){
+		$query = "SELECT * FROM auth_address WHERE auth_ip = $ip;";
+		if ( $result = $this->db->query($query) ){
+			if ( $row = $result->fetch(PDO::FETCH_ASSOC) ){
 				return true;
 			}
 		}
 
 		return false;
+
 	}
 
 	function get_menu($url_array){
 
 		$menu = ""; //menu container
+		//$menu = '<a class="topnav toggle" href="#"><div class="menu"></div><div class="menu"></div><div class="menu"></div></a>';
+		//$menu = '<a class="topnav toggle" href="#"><img class="menu" src="theme/images/menu.svg" border="0" hspace="9"></a>';
+		
+		//this is an html entity that can be used instead
+		//$menu = '<a class="topnav toggle" href="#">&#8801;</a>';
 		$items = array("home"); //forces first item to be 'home'
 
 		//scan content folder for php files
@@ -137,7 +162,8 @@ class System {
 			if ( $file != "home.php" && $file != "admin.php" ){
 				$file_length = strlen($file) - 4;
 				//make sure the file ends with .php
-				if ( strpos($file, ".php") == $file_length ){
+				if ( strpos($file, ".php") === $file_length ){
+					//add everything but the .php to the item array
 					$items[] = substr($file, 0, $file_length);
 				}
 			}
@@ -157,34 +183,67 @@ class System {
 				$class = "active";
 			}
 			$menu .= <<<EOD
-	<li class="$class"><a href='/{$item}/'>{$link_text}</a></li>
+		<a class="topnav $class" href="/{$item}/">{$link_text}</a>
 EOD;
 		}
 
 		//add the sign out item if logged in
 		if (isset($_SESSION['user']['id'])){ //if logged in and session active
 			$menu .= <<<EOD
-	<li class=""><a href='/sign_out/'>Sign Out</a></li>
+		<a href='/sign_out/'>Sign Out</a>
 EOD;
 		}
 
+		//add the search icon
+		//$menu .= '<a class="topnav toggle" href="#"><img class="menu" src="theme/images/search.svg" border="0" hspace="9"></a>';
+
 		return $menu;
+	}
+
+	function get_search($nav_search_term=""){
+		$timestamp = time();
+		$session_id = session_id();
+
+		$output = <<<EOD
+
+<form id="cf-search" action="/search/" name="nav_search" method="post">
+	<input type="hidden" name="timestamp" value="$timestamp">
+	<input type="hidden" name="session_id" class="session" value="$session_id">
+	<input type="hidden" name="form_handle" value="search">
+	<input type="hidden" name="search_uri" value="{$_SERVER['REQUEST_URI']}">
+	<input name="nav_search_term" class="nav_search_term" value="$nav_search_term" placeholder="Search" />
+</form>
+		
+EOD;
+		
+		return $output;
+	}
+
+	function get_toolbar_icon($icon, $href, $title){
+
+		$link = <<<EOD
+	<a href="{$href}"><img id="icon_{$icon}" src="theme/images/icon_{$icon}.png" border=0 title="{$title}"/></a>
+EOD;
+
+		return $link;
 	}
 
 	function get_side_bar_nav($url_array){
 
 		$side_nav = "";
 
-		if (!empty($url_array[0])){
+		if ( !empty($url_array[0]) ){
 
 			$folder = $_SERVER['DOCUMENT_ROOT']."/content/{$url_array[0]}";
 
-			if(file_exists($folder) && is_dir($folder)){
+			if( file_exists($folder) && is_dir($folder) ){
 
 				$files = scandir($folder);
 				foreach($files as $file){
-					if (strpos($file, ".php")){
-						$items[] = substr($file, 0, (strlen($file) - 4));
+					if (strpos($file, ".php")){ //file has .php extension
+						if (strpos($file, "_view") === false && strpos($file, "controller") === false) { //file does not have _view or controller in the name
+							$items[] = substr($file, 0, (strlen($file) - 4));
+						}
 					}
 				}
 
@@ -196,12 +255,11 @@ EOD;
 
 					$class = "";
 					if (!empty($url_array[1]) && $url_array[1] == $item){
-						$class = "msel";
+						$class = "active";
 					}
 					$link_text = ucwords(str_replace("_", " ", $item));
 					$side_nav .= <<<EOD
-		<li class="mitem $class"><a class="kl" href='/{$url_array[0]}/{$item}/'>{$link_text}</a></li>
-
+		<a class="sidebar $class" href="/{$url_array[0]}/{$item}/">{$link_text}</a>
 EOD;
 				}
 
@@ -371,7 +429,7 @@ EOD;
 	function add_toolbar_icon($icon, $href, $title){
 
 		$link = <<<EOD
-	<li><a href="{$href}"><img id="icon_{$icon}" src="theme/images/icon_{$icon}.png" border=0 title="{$title}"/></a></li>
+	<a class="icon" href="{$href}"><img id="icon_{$icon}" src="theme/images/icon_{$icon}.png" border=0 title="{$title}"/></a>
 EOD;
 
 		return $link;
@@ -382,9 +440,9 @@ EOD;
 
 		$output = array();
 
-		$query = "SELECT * FROM auth_content ORDER BY content_pk";
-		if ($result = mysql_query($query, $this->conn)){
-			while ($row = mysql_fetch_assoc($result)){
+		$query = "SELECT * FROM auth_content ORDER BY content_pk;";
+		if ( $result = $this->db->query($query)){
+			while( $row = $result->fetch(PDO::FETCH_ASSOC) ) {
 				$output[$row['content_pk']] = $row['content_url'];
 			}
 		}else{
@@ -414,15 +472,15 @@ EOD;
 	function get_user_by_token($token){
 
 		if (!empty($token)){
-			$token = mysql_real_escape_string($token);
+			$token = $this->db->quote($token);
 			$query = "SELECT * FROM auth_user
-			WHERE user_token = '$token' AND user_active = 1";
-			if ($result = mysql_query($query, $this->conn)){
-				if ($row = mysql_fetch_assoc($result)){
+			WHERE user_token = $token AND user_active = 1";
+			if ( $result = $this->db->query($query) ){
+				if ( $row = $result->fetch(PDO::FETCH_ASSOC) ){
 					return $row;
 				}
 			}else{
-				$_SESSION['alert'] = mysql_error($this->conn);
+				$_SESSION['alert'] = print_r($this->db->errorInfo(), true);
 			}
 		} //make sure not to get a row with an empty token
 
@@ -440,12 +498,12 @@ EOD;
 		WHERE auth_acl.user_id = $user_id
 		AND auth_acl.acl_level = 1 ";
 		//echo $query;
-		if ($result = mysql_query($query, $this->conn)){
-			while ($row = mysql_fetch_assoc($result)){
+		if ( $result = $this->db->query($query) ){
+			while ( $row = $result->fetch(PDO::FETCH_ASSOC) ){
 				$output[] = $row['content_url'];
 			}
 		}else{
-			$_SESSION['alert'] = mysql_error($this->conn);
+			$_SESSION['alert'] = print_r($this->db->errorInfo(), true);
 			return false;
 		}
 
@@ -517,10 +575,10 @@ EOD;
 		$page['title'] = $this->get_page_title($url_array);
 
 		//set up side bar - can be overwritten or added to in content file
-		$page['sidebar'] = $this->get_side_bar_nav($url_array);
+		$page['sidebar'] = "&nbsp;";
 
 		//set up toolbar - can be overwritten or added to in content file
-		$page['toolbar'] = "";
+		$page['icons'] = $this->add_toolbar_icon("print", "#", "Print");
 
 		//page content should be overwritten in content file
 		$page['content'] = "<p>WARNING: Missing Content</p>";
@@ -589,17 +647,74 @@ EOD;
 	function get_bookmarks(){
 		$output = array();
 
-		$query = "SELECT * FROM bookmark ORDER BY category, link;";
-		if ($result = mysql_query($query, $this->conn)){
-			while ($row = mysql_fetch_assoc($result)){
-				$output[$row['category']][] = $row['link'];
+		$query = "SELECT * FROM bookmark ORDER BY category, link_text, link_href;";
+		if ( $result = $this->db->query($query) ){
+			while( $row = $result->fetch(PDO::FETCH_ASSOC) ) {
+				//$output[$row['category']][] = $row['link'];
+				$output[$row['category']][] = array('href'=>$row['link_href'], 'text'=>$row['link_text']);
 			}
 		}else{
-			$_SESSION['alert'] = mysql_error($this->conn);
+			$_SESSION['alert'] = print_r($this->db->errorInfo(), true);
 			return false;
 		}
 
 		return $output;
+
+	}
+
+	function get_cURL_response($url, $body, $header=""){
+
+		$content_length = strlen($body);
+
+		//header examples:
+		//'Content-Type: text/xml; charset=utf-8',
+		//'SOAPAction: "http://www.campusmgmt.com/Soa/Foundation/UpdateFinalGrade"'
+		$curl_header = array(
+			'Content-Length: '.$content_length
+		);
+		//add text headers to the curl_header array
+		$header_array = explode("\n", $header);
+		foreach($header_array as $string){
+			if ( !empty($string) ) $curl_header[] = trim($string);
+		}
+		
+		$ch = curl_init();
+
+		//set the url and POST data
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_HEADER, true);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $curl_header);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+		//execute post
+		if ( $result = curl_exec($ch) ){
+			return $result;
+		}
+		if ( $err = curl_error($ch) ){
+			return $err;
+		}
+		
+		return "No Response";
+	}
+
+	function store_post_data($url, $body, $header, $result){
+		
+		$url = mysql_escape_string($url);
+		$body = mysql_escape_string($body);
+		$header = mysql_escape_string($header);
+		$result = mysql_escape_string($result);
+		
+		$query = "INSERT INTO post_data (post_url, post_body, post_headers, post_response, post_time)
+		VALUES ('$url', '$body', '$header', '$result', NOW())";
+		if ($result = mysql_query($query, $this->conn)){
+			return mysql_insert_id($this->conn);
+		}
+		
+		return false;
 	}
 
 }//end class

@@ -5,15 +5,16 @@
  *
  **/
 
-?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 
+?>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Craig <?=$page['title']?></title>
+	<title>Craig <?php echo $page['title']; ?></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-	<base href="http://<?=$_SERVER['HTTP_HOST']?>">
-	<link rel="shortcut icon" type="image/ico" href="http://<?=$_SERVER['HTTP_HOST']?>/favicon.ico">
+	<base href="http://<?php echo $_SERVER['HTTP_HOST']; ?>">
+	<link rel="shortcut icon" type="image/ico" href="http://<?php echo $_SERVER['HTTP_HOST']; ?>/favicon.ico">
 	<link rel="stylesheet" type="text/css" href="theme/css/main.css">
 	<link rel="stylesheet" type="text/css" media="print" href="theme/css/print.css">
 	<script type="text/javascript" src="js/jquery.js"></script>
@@ -22,45 +23,36 @@
 </head>
 <body>
 
-<div id="cf-header">
-	<div id="cf-header-logo"><a id="logo" href="http://<?=$_SERVER['HTTP_HOST']?>/">Craig.local</a></div>
-	<div id="cf-header-user">
-		<?=$system->get_user_control();?>
+<div class="cf-header">
+	<div class="cf-header-logo"><a class="logo" href="http://<?=$_SERVER['HTTP_HOST']?>/">craig.local</a></div>
+	<div class="cf-header-user"><?php echo $system->get_user_control(); ?></div>
+</div>
+
+<div class="cf-topnav">
+	<div class="cf-topnav-menu">
+		<div class="cf-topnav-menu-icon"><img id="menu-toggle" class="menu" src="theme/images/menu.svg" border="0" hspace="9"></div>
+		<div class="cf-topnav-menu-links"><?php echo $system->get_menu($url_array); ?></div>
 	</div>
-	<div id="cf-header-message"><?=$page['alert']?></div>
-</div>
-
-<div id="cf-topnav">
-	<div>
-		<ul>
-			<?=$page['menu']?>
-		</ul>
+	<div class="cf-topnav-search">
+		<div class="cf-topnav-search-icon"><img class="menu" src="theme/images/search.svg" border="0" hspace="9"></div>
+		<div class="cf-topnav-search-form"><?php echo $system->get_search(); ?></div>
 	</div>
 </div>
 
-<div id="cf-appbar">
-	<h1> <?=$page['title']?> </h1>
-	<ul>
-	 <?=$page['toolbar']?>
-	 <li><img id="icon_print" src="theme/images/icon_print.png" border=0 /></li>
-	</ul>
+<div class="cf-appbar">
+	<div class="cf-appbar-title"><?php echo $page['title']; ?></div>
+	<div class="cf-appbar-alert"><?php echo $page['alert']; ?></div>
+	<div class="cf-appbar-icons"><?php echo $page['icons']; ?></div>
 </div>
 
-<div id="cf-main">
+<div class="cf-content">
+	<div class="cf-content-side"><?php echo $page['sidebar']; ?></div>
+	<div class="cf-content-main"><?php echo $page['content']; ?></div>
+</div>
 
-	<div id="cf-sidebar">
-		<?=$page['sidebar']?>
-	</div> <!-- cf-sidebar -->
-
-	<div id="cf-content">
-		<?=$page['content']?>
-	</div> <!-- cf-content -->
-
-	<div id="cf-footer">
-		<p>Copyright &copy; <?=date("Y")?> Craig Blackham</p>
-	</div> <!-- cf-footer -->
-
-</div> <!-- cf-main -->
+<div class="cf-footer">
+	<div class="cf-footer-copy">Copyright &copy; <?php echo date("Y"); ?> Craig Blackham</div>
+</div>
 
 </body>
 </html>

@@ -6,7 +6,7 @@
  * @version 1.0
  */
 
-class Form {
+class Form extends System{
 
 	public $action;
 
@@ -37,7 +37,7 @@ class Form {
 		$validation = $validation = $this->get_validation($rules);
 
 		$select = <<<EOD
-		<select  name="{$name}" id="{$name}" style="width: 218px;" class="{$validation['class']}">
+		<select  name="{$name}" id="{$name}" class="{$validation['class']}">
 		<option value="">None</option>
 EOD;
 		foreach ($options as $value=>$text){
@@ -50,10 +50,12 @@ EOD;
 		$select .= "</select>";
 
 		$this->form .= <<<EOD
+		
 		<div id="{$name}div" class="cf-input">
 			<label for="$name">$label</label>
 			$select
 		</div>
+
 EOD;
 
 	}
@@ -70,10 +72,12 @@ EOD;
 		$validation = $this->get_validation($rules);
 
 		$this->form .= <<<EOD
+
 		<div id="{$name}div" class="cf-input">
 			<label for="{$name}">{$label}</label>
-			<input name="{$name}" id="{$name}" style="width: 210px;" class="{$validation['class']}" {$validation['inline']} value="{$default}" />
+			<input name="{$name}" id="{$name}" class="{$validation['class']}" {$validation['inline']} value="{$default}" />
 		</div>
+
 EOD;
 
 	}
@@ -98,7 +102,8 @@ EOD;
 	function add_heading($string){
 
 		$this->form .= <<<EOD
-<h3>$string</h3>
+
+	<h3>$string</h3>
 
 EOD;
 
@@ -198,7 +203,7 @@ EOD;
 
 	}
 
-	function add_textarea($name, $label, $rules, $mce=false, $size=""){
+	function add_textarea($name, $label, $rules, $mce=false, $rows="3"){
 
 		$this->rules[$name] = $rules;
 
@@ -208,18 +213,19 @@ EOD;
 		//set class of field based on rules for client-side validation
 		$validation = $this->get_validation($rules);
 		$style = "";
-		if (!empty($size)){
-			$dimensions = explode(",", $size);
-			$style = "style=\"width:{$dimensions[0]}px;height:{$dimensions[1]}px;\"";
-		}
+		//if ( empty($height) ){
+		//	$height = "20"; //default to 20px
+		//}
 
+		//$style = "style=\"height:{$height}px;\""; //set the height
+		
 		$tinymce = "";
 		if ($mce) $tinymce = "tinymce";
 
 		$this->form .= <<<EOD
 		<div id="{$name}div" class="cf-input">
 			<label for="{$name}">{$label}</label>
-			<textarea name="{$name}" id="{$name}" $style class="{$validation['class']} $tinymce">{$default}</textarea>
+			<textarea name="{$name}" id="{$name}" class="{$validation['class']} $tinymce" rows="{$rows}">{$default}</textarea>
 		</div>
 EOD;
 
@@ -292,7 +298,7 @@ EOD;
 
 			$output = <<<EOD
 			<p>
-			<img class="align-right" src="theme/images/goldie.png" alt="goldie" />
+			<img class="align-right" src="theme/images/robot.png" alt="maintenance" width="120" />
 			<b>We're sorry...</b> This resource is temporarily undergoing maintenance.
 			<br>Please try back in a few minutes.
 			</p>
@@ -313,7 +319,7 @@ EOD;
 
 			$output = <<<EOD
 			$custom_javascript
-			<form action="$this->action" name="form1" id="form1" method="post">
+			<form class="cf-form" action="$this->action" name="form1" id="form1" method="post">
 
 			<div>
 				<input type="hidden" name="timestamp" value="$timestamp">

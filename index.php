@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * index.php main file
  *
@@ -9,7 +9,7 @@ session_start();
 ob_start();
 
 //set document root
-if($_SERVER['DOCUMENT_ROOT'] == "") $_SERVER['DOCUMENT_ROOT'] = "/var/www";
+if($_SERVER['DOCUMENT_ROOT'] == "") $_SERVER['DOCUMENT_ROOT'] = "/mnt/c/www";
 
 //include common classes
 require_once($_SERVER['DOCUMENT_ROOT']."/libraries/class.phpmailer.php");
@@ -19,11 +19,12 @@ require_once($_SERVER['DOCUMENT_ROOT']."/libraries/class.system.php");
 $system = new System();
 
 //set error display
+$system->debug = true;
 $system->set_error_display();
 //$system->send_error("foo", "bar");
 
 //connect to database
-$system->db_name = "craig";
+$system->db_name = "framework";
 if ( !$conn = $system->db_connect() ){
 	$_SESSION['alert'] = "ERROR: database {$system->db_name} not connected";
 }
@@ -62,12 +63,6 @@ if ($conn){ //db is connected
 
 	//set the acl for signed in users
 	if ($system->user) $system->acl = $system->get_acl();
-
-	//set up the top nav (main menu)
-	$page['menu'] = $system->get_menu($url_array);
-
-	//set up the top nav (main menu)
-	$page['search'] = $system->get_search();
 
 	//determine content file to load
 	if (count($url_array)){
@@ -115,7 +110,6 @@ if ($system->error){
 
 //set the alert message
 if (!empty($_SESSION['alert'])) $page['alert'] = $_SESSION['alert'];
-$page['alert'] = "Sample alert message";
 
 //set up toolbar - can be overwritten or added to in content file
 $page['icons'] = $system->get_toolbar_icon("print", "#", "Print");

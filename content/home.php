@@ -1,45 +1,77 @@
-<?
+<?php
 
 /**
  * home.php
  */
 $page['title'] = "Bookmarks";
 
-$sites = $system->get_bookmarks();
+//show the database property of the system object
+//var_dump($system->db);
 
+//get a list of bookmarks
+$sites = $system->get_bookmarks();
+//var_dump($sites);
+
+//there are two lists of sites for side by side listing - this would be better to put into a flexbox
 $sitelist = "";
+$sitelist_1 = "";
+$sitelist_2 = "";
+$count = 0;
 
 foreach ($sites as $category=>$links){
 
-	$sitelist .= "<div class='category'>$category</div>";
+	$count++;
+	if ($count > 4) {
+		
+		$sitelist_2 .= "<h3>$category</h3>";
+	
+		foreach ($links as $key=>$val){
+			//var_dump($val);
+			$sitelist_2 .= <<<EOD
+			<a target="_blank" href="{$val['href']}">{$val['text']}</a><br />	
+EOD;
 
-	foreach ($links as $url){
+		}
+		
+		$sitelist_2 .= "<br />";
+	}else{
+		
+		$sitelist_1 .= "<h3>$category</h3>";
+	
+		foreach ($links as $key=>$val){
+			//var_dump($val);
+			$sitelist_1 .= <<<EOD
+			<a target="_blank" href="{$val['href']}">{$val['text']}</a><br />	
+EOD;
 
-		$sitelist .= "<div class='linklist'>";
-		$sitelist .= "<a target='_blank' href='http://{$url}'>{$url}</a>";
-		$sitelist .= "</div>";
+		}
 
+		$sitelist_1 .= "<br />";
 	}
-
-	$sitelist .= "<br />";
 
 }
 
+$page['sidebar'] = "&nbsp;";
+
+//for a single list
+$page['content'] = $sitelist;
+
+//for a side-by-side list
 $page['content'] = <<<EOD
+
+<div style="display: flex; flex-direction: row; flex-wrap: wrap;">
+	<div style="margin-right: 120px;">$sitelist_1</div>
+	<div style="margin-right: 120px;">$sitelist_2</div>
+	<div style="display: flex; flex-direction: column; align-items: center;">
+		<div><img src="theme/images/countdown/starrynight.png" border="0" hspace="9"></div>
+		<div id="countdown">00d 00:00:00</div>
+	</div>
+</div>
 
 <script type="text/javascript" src="js/countdown.js"></script>
 <script>
-	CountDownTimer('8/8/2014 9:00 AM', 'countdown');
+	CountDownTimer('10/02/2021 3:00 PM', 'countdown');
 </script>
-
-<div id="bookmarks">
-$sitelist
-</div>
-
-<div id="countdown-wrap">
-<img src="theme/images/bbb.png" border="0" hspace="9">
-<div id="countdown"></div>
-</div>
 
 EOD;
 

@@ -254,6 +254,14 @@ div.cf-input {
 	margin-bottom: 6px;
 }
 
+div.sitelist {
+	margin-bottom: 9px;
+}
+
+div.sitelist a {
+	margin-left: 9px;
+}
+
 label {
 	font-weight: bold;
 	color: orange;

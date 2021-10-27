@@ -40,6 +40,9 @@ $page['content'] = <<<EOD
 <p class="question">remove .svn files from an entire directory tree</p>
 <p class="answer">rm -rf `find . -type d -name .svn` (note the backtick marks - key next to 1)</p>
 
+<p class="question">find and delete old .mkv files from the motion folder</p>
+<p class="answer">find /var/lib/motion/ -mtime +30 -type f -name "*.mkv" -delete</p>
+
 <p class="question">find process listening on a given port (80 in example)</p>
 <p class="answer">sudo fuser -v 80/tcp</p>
 
